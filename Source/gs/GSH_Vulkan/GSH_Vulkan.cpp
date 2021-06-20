@@ -135,7 +135,7 @@ void CGSH_Vulkan::InitializeImpl()
 
 	m_frameCommandBuffer = std::make_shared<CFrameCommandBuffer>(m_context);
 	m_clutLoad = std::make_shared<CClutLoad>(m_context, m_frameCommandBuffer);
-	m_draw = std::make_shared<CDraw>(m_context, m_frameCommandBuffer);
+	m_draw = std::make_shared<CDrawMobile>(m_context, m_frameCommandBuffer);
 	m_present = std::make_shared<CPresent>(m_context);
 	m_transferHost = std::make_shared<CTransferHost>(m_context, m_frameCommandBuffer);
 	m_transferLocal = std::make_shared<CTransferLocal>(m_context, m_frameCommandBuffer);
@@ -578,7 +578,7 @@ void CGSH_Vulkan::SetRenderingContext(uint64 primReg)
 	auto colClamp = m_nReg[GS_REG_COLCLAMP] & 1;
 	auto fba = m_nReg[GS_REG_FBA_1 + context] & 1;
 
-	auto pipelineCaps = make_convertible<CDraw::PIPELINE_CAPS>(0);
+	auto pipelineCaps = make_convertible<CDrawMobile::PIPELINE_CAPS>(0);
 	pipelineCaps.hasTexture = prim.nTexture;
 	pipelineCaps.textureHasAlpha = tex0.nColorComp;
 	pipelineCaps.textureBlackIsTransparent = texA.nAEM;
@@ -607,11 +607,11 @@ void CGSH_Vulkan::SetRenderingContext(uint64 primReg)
 	case PRIM_TRIANGLEFAN:
 	case PRIM_TRIANGLESTRIP:
 	case PRIM_SPRITE:
-		pipelineCaps.primitiveType = CDraw::PIPELINE_PRIMITIVE_TRIANGLE;
+		pipelineCaps.primitiveType = CDrawMobile::PIPELINE_PRIMITIVE_TRIANGLE;
 		break;
 	case PRIM_LINE:
 	case PRIM_LINESTRIP:
-		pipelineCaps.primitiveType = CDraw::PIPELINE_PRIMITIVE_LINE;
+		pipelineCaps.primitiveType = CDrawMobile::PIPELINE_PRIMITIVE_LINE;
 		break;
 	case PRIM_POINT:
 		pipelineCaps.primitiveType = CDraw::PIPELINE_PRIMITIVE_POINT;
@@ -863,7 +863,7 @@ void CGSH_Vulkan::Prim_Line()
 	    rgbaq[1].nB, rgbaq[1].nA);
 
 	// clang-format off
-	CDraw::PRIM_VERTEX vertices[] =
+	CDrawMobile::PRIM_VERTEX vertices[] =
 	{
 		{	x1, y1, z1, color1, s[0], t[0], q[0], 0 },
 		{	x2, y2, z2, color2, s[1], t[1], q[1], 0 },
@@ -966,7 +966,7 @@ void CGSH_Vulkan::Prim_Triangle()
 	}
 
 	// clang-format off
-	CDraw::PRIM_VERTEX vertices[] =
+	CDrawMobile::PRIM_VERTEX vertices[] =
 	{
 		{	x1, y1, z1, color1, s[0], t[0], q[0], f[0]},
 		{	x2, y2, z2, color2, s[1], t[1], q[1], f[1]},
@@ -1039,7 +1039,7 @@ void CGSH_Vulkan::Prim_Sprite()
 	    rgbaq[1].nB, rgbaq[1].nA);
 
 	// clang-format off
-	CDraw::PRIM_VERTEX vertices[] =
+	CDrawMobile::PRIM_VERTEX vertices[] =
 	{
 		{x1, y1, z, color, s[0], t[0], 1, 0},
 		{x2, y1, z, color, s[1], t[0], 1, 0},
