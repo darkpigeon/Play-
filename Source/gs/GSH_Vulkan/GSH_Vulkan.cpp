@@ -35,7 +35,7 @@ static Framework::Vulkan::CImage CreateSwizzleTable(Framework::Vulkan::CDevice& 
 	result.Fill(queue, commandBufferPool, memoryProperties,
 	            CGsPixelFormats::CPixelIndexor<StorageFormat>::GetPageOffsets());
 	result.SetLayout(queue, commandBufferPool,
-	                 VK_IMAGE_LAYOUT_GENERAL, VK_ACCESS_SHADER_READ_BIT, VK_IMAGE_ASPECT_COLOR_BIT);
+	                 VK_IMAGE_LAYOUT_GENERAL, VK_ACCESS_SHADER_READ_BIT);
 	return result;
 }
 
@@ -125,13 +125,13 @@ void CGSH_Vulkan::InitializeImpl()
 	m_swizzleTablePSMZ32 = CreateSwizzleTable<CGsPixelFormats::STORAGEPSMZ32>(m_context->device, m_context->physicalDeviceMemoryProperties, m_context->queue, m_context->commandBufferPool);
 	m_swizzleTablePSMZ16 = CreateSwizzleTable<CGsPixelFormats::STORAGEPSMZ16>(m_context->device, m_context->physicalDeviceMemoryProperties, m_context->queue, m_context->commandBufferPool);
 
-	m_context->swizzleTablePSMCT32View = m_swizzleTablePSMCT32.CreateImageView(VK_IMAGE_ASPECT_COLOR_BIT);
-	m_context->swizzleTablePSMCT16View = m_swizzleTablePSMCT16.CreateImageView(VK_IMAGE_ASPECT_COLOR_BIT);
-	m_context->swizzleTablePSMCT16SView = m_swizzleTablePSMCT16S.CreateImageView(VK_IMAGE_ASPECT_COLOR_BIT);
-	m_context->swizzleTablePSMT8View = m_swizzleTablePSMT8.CreateImageView(VK_IMAGE_ASPECT_COLOR_BIT);
-	m_context->swizzleTablePSMT4View = m_swizzleTablePSMT4.CreateImageView(VK_IMAGE_ASPECT_COLOR_BIT);
-	m_context->swizzleTablePSMZ32View = m_swizzleTablePSMZ32.CreateImageView(VK_IMAGE_ASPECT_COLOR_BIT);
-	m_context->swizzleTablePSMZ16View = m_swizzleTablePSMZ16.CreateImageView(VK_IMAGE_ASPECT_COLOR_BIT);
+	m_context->swizzleTablePSMCT32View = m_swizzleTablePSMCT32.CreateImageView();
+	m_context->swizzleTablePSMCT16View = m_swizzleTablePSMCT16.CreateImageView();
+	m_context->swizzleTablePSMCT16SView = m_swizzleTablePSMCT16S.CreateImageView();
+	m_context->swizzleTablePSMT8View = m_swizzleTablePSMT8.CreateImageView();
+	m_context->swizzleTablePSMT4View = m_swizzleTablePSMT4.CreateImageView();
+	m_context->swizzleTablePSMZ32View = m_swizzleTablePSMZ32.CreateImageView();
+	m_context->swizzleTablePSMZ16View = m_swizzleTablePSMZ16.CreateImageView();
 
 	m_frameCommandBuffer = std::make_shared<CFrameCommandBuffer>(m_context);
 	m_clutLoad = std::make_shared<CClutLoad>(m_context, m_frameCommandBuffer);
@@ -626,7 +626,7 @@ void CGSH_Vulkan::SetRenderingContext(uint64 primReg)
 		pipelineCaps.primitiveType = CDrawMobile::PIPELINE_PRIMITIVE_LINE;
 		break;
 	case PRIM_POINT:
-		pipelineCaps.primitiveType = CDraw::PIPELINE_PRIMITIVE_POINT;
+		pipelineCaps.primitiveType = CDrawMobile::PIPELINE_PRIMITIVE_POINT;
 		break;
 	}
 
@@ -802,7 +802,7 @@ void CGSH_Vulkan::Prim_Point()
 	    rgbaq.nB, rgbaq.nA);
 
 	// clang-format off
-	CDraw::PRIM_VERTEX vertex =
+	CDrawMobile::PRIM_VERTEX vertex =
 	{
 		//x, y, z, color, s, t, q, f
 		  x, y, z, color, 0, 0, 1, 0,
